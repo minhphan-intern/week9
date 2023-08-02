@@ -1,0 +1,28 @@
+version: "3"
+services:
+  srv:
+    container_name: odoo
+    image: phuocminh22/odoo:base
+    volumes:
+      - ./odoo_data:/opt/odoo/.local/share/Odoo
+    tty: true
+    restart: always
+    hostname: "odoo"
+    networks:
+      - odoo
+    deploy:
+      replicas: 2
+  proxy:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/
+    ports:
+      - '80:80'
+    tty: true
+    restart: always
+    networks:
+      - odoo
+networks:
+  odoo:
+    external: true
