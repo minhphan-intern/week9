@@ -9,10 +9,19 @@ services:
       - ./prometheus_config:/etc/prometheus
     restart: unless-stopped
     tty: true
-  grafana:
-    container_name: grafana
-    image: grafana/grafana-oss:10.0.3
-    ports:
-      - '3000:3000'
+  # grafana:
+  #   container_name: grafana
+  #   image: grafana/grafana-oss:10.0.3
+  #   ports:
+  #     - '3000:3000'
+  #   restart: unless-stopped
+  #   tty: true
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    pid: host
     restart: unless-stopped
-    tty: true
+    volumes:
+      - '/:/host:ro,rslave'
