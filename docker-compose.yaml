@@ -5,17 +5,20 @@ services:
     image: prom/prometheus:v2.45.0
     ports:
       - '9090:9090'
+    command:
+      - --enable-feature=remote-write-receiver
+      - --config.file=/etc/prometheus/prometheus.yml
     volumes:
       - ./prometheus_config:/etc/prometheus
     restart: unless-stopped
     tty: true
-  # grafana:
-  #   container_name: grafana
-  #   image: grafana/grafana-oss:10.0.3
-  #   ports:
-  #     - '3000:3000'
-  #   restart: unless-stopped
-  #   tty: true
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:10.0.3
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+    tty: true
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
@@ -25,3 +28,18 @@ services:
     restart: unless-stopped
     volumes:
       - '/:/host:ro,rslave'
+  nginx:
+    image: nginx
+    container_name: nginx 
+    tty: true
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d
+  # nginx_exporter:
+  #   image: nginx/nginx-prometheus-exporter:0.10.0
+  #   container_name: nginx_exporter
+  #   ports:
+  #     - '9113:9113'
+  #   tty: true
+  #   command:
+  #     - -nginx.scrape-uri
+  #     - http://nginx:8080/stub_status
